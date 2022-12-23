@@ -26,7 +26,7 @@ const sql = require("mssql");
     async function getSubCategoriesById(parent_id) {
       try {
       let pool = await sql.connect(config);
-      let res = await pool.request().query('SELECT p.* FROM products p WHERE p.category_id  = ' + parent_id);
+      let res = await pool.request().query('SELECT p.* FROM categories c  INNER JOIN products p ON p.category_id = c.id WHERE c.id = ' + parent_id);
       console.log(" res :" + res);
       return res.recordsets;
       } catch (error) {
