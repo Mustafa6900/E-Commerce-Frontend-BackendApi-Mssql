@@ -51,6 +51,19 @@ const sql = require("mssql");
     }
 }
 
+   async function updateguestemail(guest) {
+    try {
+        let pool = await sql.connect(config);
+        let res = await pool.request()
+            .input("email", sql.VarChar, guest.email).
+            query("UPDATE guest SET email = @email WHERE id = " + guest.id);
+        console.log(" res :" + res);
+        return res.recordsets;
+    } catch (error) {
+        console.log(" error :" + error);
+    }
+}
+
     async function deleteguest(id) {
     try {
         let pool = await sql.connect(config);
@@ -72,4 +85,5 @@ module.exports = {
     addguest: addguest,
     updateguestpassword: updateguestpassword,
     deleteguest: deleteguest,
+    updateguestemail: updateguestemail
 };

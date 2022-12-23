@@ -1,6 +1,7 @@
 var config = require("../dbconfig");
 const sql = require("mssql");
  
+ //tüm kategorileri getir
   async function getCategories() {
     try {
       let pool = await sql.connect(config);
@@ -12,30 +13,35 @@ const sql = require("mssql");
     }
   }
 
-  async function getCategoriesByCategoriesId(category_id) {
-    try {
-    let pool = await sql.connect(config);
-    let res = await pool.request().query("SELECT * FROM products WHERE category_id = " + category_id);
-    console.log(" res :" + res);
-    return res.recordsets;
-    } catch (error) {
-    console.log(" error :" + error);
-    }
-    }
+  // ana kategorileri kategoriyi getir
 
-    async function getSubCategoriesById(parent_id) {
-      try {
+  async function getCategoriesById() {
+    try {
       let pool = await sql.connect(config);
-      let res = await pool.request().query('SELECT p.* FROM categories c  INNER JOIN products p ON p.category_id = c.id WHERE c.id = ' + parent_id);
+      let res = await pool.request().query("SELECT * FROM categories WHERE parent_id IS NULL");
       console.log(" res :" + res);
       return res.recordsets;
-      } catch (error) {
+    } catch (error) {
       console.log(" error :" + error);
-      }
-      }
+    }
+  }
+
+  // alt kategorileri kategoriyi getir
+
+  async function getsubCategoriesById() {
+    try {
+      let pool = await sql.connect(config);
+      let res = await pool.request().query("SELECT * FROM categories WHERE parent_id IS NOT NULL");
+      console.log(" res :" + res);
+      return res.recordsets;
+    } catch (error) {
+      console.log(" error :" + error);
+    }
+  }
+
 
 module.exports = {
     getCategories: getCategories,
-    getCategoriesByCategoriesId: getCategoriesByCategoriesId,
-    getSubCategoriesById: getSubCategoriesById,
+    getCategoriesById: getCategoriesById,
+    getsubCategoriesById: getsubCategoriesById,
 };
