@@ -40,8 +40,6 @@ const sql = require("mssql");
     }
 }
 
-  
-
 module.exports = {
     getAddresses: getAddresses,
     getAddressesbyid: getAddressesbyid,
