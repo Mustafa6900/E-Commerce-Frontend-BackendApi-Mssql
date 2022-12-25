@@ -10,8 +10,7 @@ const sql = require("mssql");
     } catch (error) {
         console.log(" error :" + error);
     }
-  }
-
+}
   async function getguestbyid(id) {
     try {
         let pool = await sql.connect(config);
@@ -22,7 +21,19 @@ const sql = require("mssql");
         console.log(" error :" + error);
     }
 }
-
+  async function guestlogin(email, password) {
+    try {
+        let pool = await sql.connect(config);
+        let res = await pool.request()
+            .input('email', sql.VarChar, email)
+            .input('password', sql.VarChar, password)
+            .query("SELECT *  FROM guest WHERE email = @email AND password = @password");
+        console.log(" res :" + res);
+        return res.recordsets;
+    } catch (error) {
+        console.log(" error :" + error);
+    }
+}
   async function addguest(guest) {
     try {
         let pool = await sql.connect(config);
@@ -37,34 +48,7 @@ const sql = require("mssql");
         console.log(" error :" + error);
     }
 }
-
-   async function updateguestpassword(guest) {
-    try {
-        let pool = await sql.connect(config);
-        let res = await pool.request()
-            .input("password", sql.VarChar, guest.password).
-            query("UPDATE guest SET password = @password WHERE id = " + guest.id);
-        console.log(" res :" + res);
-        return res.recordsets;
-    } catch (error) {
-        console.log(" error :" + error);
-    }
-}
-
-   async function updateguestemail(guest) {
-    try {
-        let pool = await sql.connect(config);
-        let res = await pool.request()
-            .input("email", sql.VarChar, guest.email).
-            query("UPDATE guest SET email = @email WHERE id = " + guest.id);
-        console.log(" res :" + res);
-        return res.recordsets;
-    } catch (error) {
-        console.log(" error :" + error);
-    }
-}
-
-    async function deleteguest(id) {
+  async function deleteguest(id) {
     try {
         let pool = await sql.connect(config);
         let res = await pool.request()
@@ -75,15 +59,26 @@ const sql = require("mssql");
         console.log(" error :" + error);
     }
 }
-
-
-
+  async function updateGuest(id,guest) {
+    try {
+    let pool = await sql.connect(config);
+    let res = await pool.request()
+    .input('email', sql.VarChar, guest.email)
+    .input('password', sql.VarChar, guest.password)
+    .query("UPDATE guest SET email = @email, password = @password WHERE id = " + id);
+    console.log(" res :" + res);
+    return res.recordsets;
+    } catch (error) {
+    console.log(" error :" + error);
+    }
+}
+    
 
 module.exports = {
     getguest: getguest,
     getguestbyid: getguestbyid,
+    guestlogin: guestlogin,
     addguest: addguest,
-    updateguestpassword: updateguestpassword,
+    updateGuest: updateGuest,
     deleteguest: deleteguest,
-    updateguestemail: updateguestemail
 };

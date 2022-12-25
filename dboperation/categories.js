@@ -39,9 +39,24 @@ const sql = require("mssql");
     }
   }
 
+  // secili ana kategoriye göre alt kategorileri getir
+
+  async function getsubCategoriesByParentId(parent_id) {
+    try {
+      let pool = await sql.connect(config);
+      let res = await pool.request().query("SELECT * FROM categories WHERE parent_id = " + parent_id);
+      console.log(" res :" + res);
+      return res.recordsets;
+    } catch (error) {
+      console.log(" error :" + error);
+    }
+  }
+
+
 
 module.exports = {
     getCategories: getCategories,
     getCategoriesById: getCategoriesById,
     getsubCategoriesById: getsubCategoriesById,
+    getsubCategoriesByParentId: getsubCategoriesByParentId
 };

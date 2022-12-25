@@ -14,6 +14,9 @@ const sqlh = require("../dboperation/products");
 const sqlj = require("../dboperation/reviews");
 const sqlk = require("../dboperation/guest");
 const sqll = require("../dboperation/wallets");
+const sqlm = require("../dboperation/filter");
+
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
@@ -44,13 +47,12 @@ router.get('/cart', function(req, res, next) {
 router.get('/categories', function(req, res, next) {
   sqld.getCategories().then(result => {
     res.json(result);
-    res.render(result)
   });
 });
 router.get('/favorites', function(req, res, next) {
   sqle.getFavorites().then(result => {
     res.json(result);
-    res.render(result)
+  
   });
 });
 router.get('/order_items', function(req, res, next) {
@@ -117,8 +119,13 @@ router.get('/wallets', function(req, res, next) {
 
 //  guest actions
 
-  router.get('/guest/id/:id', function(req, res, next) {
+  router.get('/guest/getuser/:id', function(req, res, next) {
   sqlk.getguestbyid(req.params.id).then(result => {
+  res.json(result);
+  });
+  });
+  router.post('/guest/login', function(req, res, next) {
+  sqlk.guestlogin(req.body).then(result => {
   res.json(result);
   });
   });
@@ -127,22 +134,19 @@ router.get('/wallets', function(req, res, next) {
     res.json(result);
     });
     });
-  router.put('/guest/updateguestpassword/:id', function(req, res, next) {
-      sqlk.updateguestpassword(req.body).then(result => {
-      res.json(result);
-      });
-      });
-  router.put('/guest/updateguestemail/:id', function(req, res, next) {
-        sqlk.updateguestemail(req.body).then(result => {
-        res.json(result);
-        });
-        });
   router.route('/guest/guestdelete/:id').delete(function(req, res, next) {
   sqlk.deleteguest(req.body).then(result => {
   res.json(result);
   });
   });
-
+  router.put('/guestupdate/:id', (req, res) => {  // kullanıcı email password güncelleme 
+    const id = req.params.id;
+    const guest = req.body;
+    sqlk.updateGuest(id, guest).then((updatedGuest) => {
+    res.json(updatedGuest);
+    });
+    });
+    
 //  addresses actions
 
   router.get('/addresses/:id', function(req, res, next) {
@@ -198,6 +202,12 @@ router.get('/wallets', function(req, res, next) {
         });
         });
 
+        router.get('/categories/subcategories/:id', function(req, res, next) {  // secili ana kategorinin alt kategori isimlerini getir
+          sqld.getsubCategoriesByParentId(req.params.id).then(result => {
+          res.json(result);
+          });
+          });
+
     // favorites actions
 
     router.get('/favorites/:id', function(req, res, next) {
@@ -240,14 +250,16 @@ router.get('/wallets', function(req, res, next) {
 
         // products actions
 
-        router.get('/categories/product/:id', function(req, res, next) { //ana kategoriye göre ürünler getir
+        router.get('/products/category/:name', function(req, res, next) { //ana kategoriye göre ürünler getir
           sqlh.getProductByCategoriesId(req.params.id).then(result => {
           res.json(result);
           });
           });
 
-          router.get('/subcategories/product/:id', function(req, res, next) { //alt kategoriye göre ürünler getir
-            sqlh.getProductBySubCategoriesId(req.params.id).then(result => {
+          router.get('/products/category-barcode?:barcode?:category', function(req, res, next) { // ana kategori ve barkod numarasına göre ürün getir
+            const category = req.query.category;
+            const barcode = req.query.barcode;
+            sqlh.getProductsByCategoryAndBarcode(category, barcode).then(result => {
             res.json(result);
             });
             });
@@ -266,20 +278,14 @@ router.get('/wallets', function(req, res, next) {
             });
             });
 
-            router.post('/reviews/addreview/:id', function(req, res, next) {
+            router.post('/reviews/addreview', function(req, res, next) {
               sqlj.addReview(req.body).then(result => {
               res.json(result);
               });
               });
 
-              router.put('/reviews/update/:id', function(req, res, next) {
-                sqlj.updateReview(req.body).then(result => {
-                res.json(result);
-                });
-                });
-
               router.route('/reviews/delete/:id').delete(function(req, res, next) {
-                sqlj.deleteReview(req.params.id).then(result => {
+                sqlj.deleteReviewItem(req.params.id).then(result => {
                 res.json(result);
                 });
                 });
@@ -297,6 +303,19 @@ router.get('/wallets', function(req, res, next) {
                   res.json(result);
                   });
                   });
+
+                  // filter actions
+
+                  router.get('/products/filter/:searchKeyword', function(req, res, next) {
+                    const searchKeyword = req.params.searchKeyword;
+                 
+                    sqlm.getProductFilter(searchKeyword).then(result => {
+                    res.json(result);
+                    });
+                    });
+
+
+                  
 
             
 

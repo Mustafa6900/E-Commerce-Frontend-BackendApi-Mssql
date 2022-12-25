@@ -26,7 +26,7 @@ const sql = require("mssql");
    async function addAddresses(addresses) {
     try {
         let pool = await sql.connect(config);
-        let res = await pool.request()
+        let res = await pool.requestx()
             .input("user_id", sql.Int, addresses.user_id)
             .input("address", sql.VarChar, addresses.address)
             .input("city", sql.VarChar,addresses.city)
