@@ -12,12 +12,12 @@ const sql = require("mssql");
     }
   }
 
-  async function getCartByCartId(cartId) {
+  async function getCartByCartId(user_id) {
     try {
         let pool = await sql.connect(config);
         let res = await pool.request()
-            .input('input_parameter', sql.Int, cartId)
-            .query("SELECT *  FROM cart WHERE user_id = @input_parameter");
+            .input('user_id', sql.Int, user_id.user_id)
+            .query("SELECT * FROM cart c INNER JOIN products p ON c.product_id = p.id WHERE user_id = @user_id");
         console.log(" res :" + res);
         return res.recordsets;
     } catch (error) {
@@ -46,7 +46,8 @@ async function updateCartItem(cart) {
     let res = await pool.request()
     .input('product_id', sql.Int, cart.product_id)
     .input('quantity', sql.Int, cart.quantity)
-    .query("UPDATE cart SET product_id = @product_id, quantity = @quantity WHERE id = " + cart.id);
+    .input ('user_id', sql.Int, cart.user_id)
+    .query("UPDATE cart SET product_id = @product_id, quantity = @quantity WHERE user_id = " + cart.user_id);
     console.log(" res :" + res);
     return res.recordsets;
     } catch (error) {
@@ -54,12 +55,12 @@ async function updateCartItem(cart) {
     }
     }
 
-async function deleteCartItem(user_id, product_id) {
+async function deleteCartItem(cart) {
     try {
         let pool = await sql.connect(config);
         let res = await pool.request()
-            .input('user_id', sql.Int, user_id)
-            .input('product_id', sql.Int, product_id)
+            .input('user_id', sql.Int, cart.user_id)
+            .input('product_id', sql.Int, cart.product_id)
             .query("DELETE FROM cart WHERE user_id = @user_id AND product_id = @product_id");
         console.log(" res :" + res);
         return res.recordsets;
@@ -67,6 +68,7 @@ async function deleteCartItem(user_id, product_id) {
         console.log(" error :" + error);
     }
 }
+
 
 
   

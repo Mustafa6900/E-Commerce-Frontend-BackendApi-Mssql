@@ -39,7 +39,7 @@ router.get('/branches', function(req, res, next) {
     res.json(result);
   });
 });
-router.get('/cart', function(req, res, next) {
+router.get('/carts', function(req, res, next) {
   sqlc.getCart().then(result => {
     res.json(result);
   });
@@ -139,7 +139,7 @@ router.get('/wallets', function(req, res, next) {
   res.json(result);
   });
   });
-  router.put('/guestupdate/:id', (req, res) => {  // kullanıcı email password güncelleme 
+  router.put('/ :id', (req, res) => {  // kullanıcı email password güncelleme 
     const id = req.params.id;
     const guest = req.body;
     sqlk.updateGuest(id, guest).then((updatedGuest) => {
@@ -149,22 +149,27 @@ router.get('/wallets', function(req, res, next) {
     
 //  addresses actions
 
-  router.get('/addresses/:id', function(req, res, next) {
-  sqla.getAddressesByAddressesId(req.params.id).then(result => {
+  router.post('/myAddresses', function(req, res, next) {
+  sqla.getAddressesByAddressesId(req.body).then(result => {
   res.json(result);
   });
   });
 
-  router.post('/addresses/addAddresses/:user_id', function(req, res, next) {
+  router.post('/addresses/addAddresses', function(req, res, next) {
   sqla.addAddresses(req.body).then(result => {
   res.json(result);
   });
   });
 
+  router.delete('/addresses/deleteAddresses' , function(req, res, next) {
+  sqla.deleteAddresses(req.body).then(result => {
+  res.json(result);
+  });
+  });
 // cart actions
 
-  router.get('/cart/:id', function(req, res, next) {
-  sqlc.getCartByCartId(req.params.id).then(result => {
+  router.post('/cart', function(req, res, next) {
+  sqlc.getCartByCartId(req.body).then(result => {
   res.json(result);
   });
   });
@@ -172,17 +177,18 @@ router.get('/wallets', function(req, res, next) {
   router.post('/cart/addCart', function(req, res, next) {
   sqlc.addCart(req.body).then(result => {
   res.json(result);
+  console.log(result,"cart eklendi")
   });
   });
 
-  router.put('/cart/update/:id', function(req, res, next) {
+  router.put('/cart/updateCart', function(req, res, next) {
     sqlc.updateCartItem(req.body).then(result => {
     res.json(result);
     });
     });
 
-  router.route('/cart/delete/:user_id/:product_id').delete(function(req, res, next) {
-    sqlc.deleteCartItem(req.params.user_id,req.params.product_id).then(result => {
+  router.route('/cart/deleteCart').delete(function(req, res, next) {
+    sqlc.deleteCartItem(req.body).then(result => {
     res.json(result);
     });
     });
@@ -210,15 +216,16 @@ router.get('/wallets', function(req, res, next) {
 
     // favorites actions
 
-    router.get('/favorites/:id', function(req, res, next) {
-      sqle.getfavoritesByfavoritesId(req.params.id).then(result => {
-      res.json(result);
-      });
-      });
+      router.post('/favorites', function(req, res, next) {
+        sqle.getfavoritesByfavoritesId(req.body).then(result => {
+        res.json(result);
+        });
+        });
     
       router.post('/favorites/addfavorites', function(req, res, next) {
       sqle.addfavorites(req.body).then(result => {
       res.json(result);
+      
       });
       });
     
@@ -228,25 +235,31 @@ router.get('/wallets', function(req, res, next) {
         });
         });
     
-      router.route('/favorites/delete/:user_id/:product_id').delete(function(req, res, next) {
-        sqle.deletefavoritesItem(req.params.user_id,req.params.product_id).then(result => {
+      router.route('/favorites/deletefavorites').delete(function(req, res, next) {
+        sqle.deletefavoritesItem(req.body).then(result => {
         res.json(result);
         });
         });
 
         // orders and order_items actions
 
-        router.get('/orders/:id', function(req, res, next) {
-          sqlg.getOrdersById(req.params.id).then(result => {
+        router.post('/myorder', function(req, res, next) {
+          sqlg.getOrdersById(req.body).then(result => {
           res.json(result);
           });
           });
 
-        router.get("/orders/order_items/:id", function(req, res, next) {
-          sqlf.getOrder_itemsById().then(result => {
+        router.get("/order/details", function(req, res, next) {
+          sqlf.getOrder_itemsById(req.body).then(result => {
             res.json(result);
           });
         });
+
+        router.post('/order/buyproduct', function(req, res, next) {
+          sqlg.postOrders(req.body).then(result => {
+          res.json(result);
+          });
+          });
 
         // products actions
 
@@ -284,6 +297,7 @@ router.get('/wallets', function(req, res, next) {
               });
               });
 
+
               router.route('/reviews/delete/:id').delete(function(req, res, next) {
                 sqlj.deleteReviewItem(req.params.id).then(result => {
                 res.json(result);
@@ -292,18 +306,23 @@ router.get('/wallets', function(req, res, next) {
 
               // wallets actions
 
-              router.get('/wallets/:id', function(req, res, next) {
-                sqll.getWalletsById(req.params.id).then(result => {
+              router.post('/myWallets', function(req, res, next) {
+                sqll.getWalletsById(req.body).then(result => {
                 res.json(result);
                 });
                 });
 
-                router.post('/wallets/addwallets/:id', function(req, res, next) {
+                router.post('/wallets/addwallets', function(req, res, next) {
                   sqll.addWallets(req.body).then(result => {
                   res.json(result);
                   });
                   });
-
+                
+                router.delete('/wallets/deleteWallets' , function(req, res, next) {
+                  sqll.deleteWallets(req.body).then(result => {
+                  res.json(result);
+                  });
+                  });
                   // filter actions
 
                   router.get('/products/filter/:searchKeyword', function(req, res, next) {

@@ -27,14 +27,14 @@ const sql = require("mssql");
 }   
    // belli yeni ürüne yorum yapmak isteyen kullanıcı
 
-   async function addReview(product_id,user_id,comment,rating) {
+   async function addReview(reviews) {
     try {
     let pool = await sql.connect(config);
     let res = await pool.request()
-    .input('product_id', sql.Int, product_id)
-    .input('user_id', sql.Int, user_id)
-    .input('rating', sql.Int, rating)
-    .input('comment', sql.VarChar, comment)
+    .input('user_id', sql.Int, reviews.user_id)
+    .input('rating', sql.Int, reviews.rating)
+    .input('product_id', sql.Int, reviews.product_id)
+    .input('comment', sql.VarChar, reviews.comment)
     .query('INSERT INTO reviews (rating,product_id, user_id, comment) VALUES (@rating, @product_id, @user_id, @comment)');
     console.log(" res :" + res);
     return res.recordsets;

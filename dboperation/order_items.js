@@ -12,11 +12,11 @@ const sql = require("mssql");
     }
   }
 
-  async function getOrder_itemsById(order_id) {
+  async function getOrder_itemsById(orderitem) {
     try {
         let pool = await sql.connect(config);
         let res = await pool.request()
-            .input('input_parameter', sql.Int, order_id)
+            .input('input_parameter', sql.Int, orderitem.order_id)
             .query("SELECT *  FROM order_items WHERE order_id = @input_parameter");
         console.log(" res :" + res);
         return res.recordsets;

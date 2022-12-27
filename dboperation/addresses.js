@@ -12,10 +12,12 @@ const sql = require("mssql");
     }
   }
 
-  async function getAddressesbyid(user_id) {
+  async function getAddressesByAddressesId(address) {
     try {
         let pool = await sql.connect(config);
-        let res = await pool.request().query("SELECT *  FROM addresses WHERE user_id = " + user_id);
+        let res = await pool.request().
+        input('user_id', sql.Int, address.user_id)
+        .query("SELECT *  FROM addresses WHERE user_id = " + address.user_id);
         console.log(" res :" + res);
         return res.recordsets;
     } catch (error) {
@@ -26,7 +28,7 @@ const sql = require("mssql");
    async function addAddresses(addresses) {
     try {
         let pool = await sql.connect(config);
-        let res = await pool.requestx()
+        let res = await pool.request()
             .input("user_id", sql.Int, addresses.user_id)
             .input("address", sql.VarChar, addresses.address)
             .input("city", sql.VarChar,addresses.city)
@@ -39,9 +41,21 @@ const sql = require("mssql");
         console.log(" error :" + error);
     }
 }
-
+   async function deleteAddresses(addresses) {
+    try {
+        let pool = await sql.connect(config);
+        let res = await pool.request()
+        .input('id', sql.Int, addresses.id)
+        .query("DELETE FROM addresses WHERE id = " + addresses.id);
+        console.log(" res :" + res);
+        return res.recordsets;
+    } catch (error) {
+        console.log(" error :" + error);
+    }
+}
 module.exports = {
     getAddresses: getAddresses,
-    getAddressesbyid: getAddressesbyid,
+    getAddressesByAddressesId: getAddressesByAddressesId,
     addAddresses: addAddresses,
+    deleteAddresses: deleteAddresses,
 };
