@@ -54,6 +54,19 @@ const sql = require("mssql");
         console.log(" error :" + error);
         }
         }
+    async function filterSizeColor(product){
+        try{
+            let pool = await sql.connect(config);
+            let res = await pool.request()
+            .input('size', sql.VarChar, product.size)
+            .input('color', sql.VarChar, product.color)
+            .query("SELECT * FROM products WHERE size = @size OR color = @color");
+            console.log(" res :" + res);
+            return res.recordsets;
+        }catch(error){
+            console.log(" error :" + error);
+        }
+    }
   
 
 module.exports = {
@@ -61,5 +74,6 @@ module.exports = {
     getProductByCategoryName: getProductByCategoryName,
     getProductsByCategoryAndBarcode: getProductsByCategoryAndBarcode,
     getProductById: getProductById,
+    filterSizeColor: filterSizeColor
 
 };

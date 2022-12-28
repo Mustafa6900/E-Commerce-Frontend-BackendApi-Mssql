@@ -17,7 +17,7 @@ async function getfavoritesByfavoritesId(user_id) {
         let pool = await sql.connect(config);
         let res = await pool.request()
             .input('user_id', sql.Int, user_id.user_id)
-            .query("SELECT *  FROM favorites WHERE user_id = @user_id");
+            .query("SELECT *  FROM favorites f JOIN products p ON f.product_id = p.id WHERE user_id = @user_id");
         console.log(" res :" + res);
         return res.recordsets;
     } catch (error) {

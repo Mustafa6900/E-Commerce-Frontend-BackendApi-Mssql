@@ -17,6 +17,7 @@ const sql = require("mssql");
         let res = await pool.request().query("SELECT *  FROM guest WHERE id = " + id);
         console.log(" res :" + res);
         return res.recordsets;
+        
     } catch (error) {
         console.log(" error :" + error);
     }
@@ -40,8 +41,10 @@ const sql = require("mssql");
         let res = await pool.request()
             .input("name", sql.VarChar, guest.name)
             .input("email", sql.VarChar, guest.email)
-            .input("password", sql.VarChar,guest.password).
-            query("INSERT INTO guest (name, email, password) VALUES (@name, @email, @password)");
+            .input("password", sql.VarChar,guest.password)
+            .input ("point", sql.Int, guest.point)
+            .input("discount", sql.Int, guest.discount)
+            .query("INSERT INTO guest (name, email, password,point,discount) VALUES (@name, @email, @password, @point, @discount)");
         console.log(" res :" + res);
         return res.recordsets;
     } catch (error) {
@@ -72,9 +75,33 @@ const sql = require("mssql");
     console.log(" error :" + error);
     }
 }
-    
+  async function updatepoint(){
+    try {
+    let pool = await sql.connect(config);
+    let res = await pool.request().query("UPDATE guest SET point = point + 5 FROM reviews WHERE reviews.user_id = guest.id");
+    console.log(" res :" + res);
+    return res.recordsets;
+    } catch (error) {
+    console.log(" error :" + error);
+    }
+}
+ async function updateDiscount(guest){
+    try {
+    let pool = await sql.connect(config)
+    let res = await pool.request()
+    .input('id', sql.Int, guest.id)
+    .input('discount', sql.Int, guest.discount)
+    .query("UPDATE guest SET discount = @discount WHERE id = @id");
+    console.log(" res :" + res);
+    return res.recordsets;
+    } catch (error) {
+    console.log(" error :" + error);
+    }
+ }
 
 module.exports = {
+    updateDiscount: updateDiscount,
+    updatepoint: updatepoint,
     getguest: getguest,
     getguestbyid: getguestbyid,
     guestlogin: guestlogin,

@@ -18,7 +18,7 @@ const sql = require("mssql");
         let pool = await sql.connect(config);
         let res = await pool.request()
             .input('input_parameter', sql.Int, product_id)
-            .query("SELECT *  FROM reviews WHERE product_id = @input_parameter");
+            .query("SELECT *  FROM reviews WHERE product_id = @input_parameter")
         console.log(" res :" + res);
         return res.recordsets;
     } catch (error) {
@@ -35,9 +35,12 @@ const sql = require("mssql");
     .input('rating', sql.Int, reviews.rating)
     .input('product_id', sql.Int, reviews.product_id)
     .input('comment', sql.VarChar, reviews.comment)
-    .query('INSERT INTO reviews (rating,product_id, user_id, comment) VALUES (@rating, @product_id, @user_id, @comment)');
+    .query('INSERT INTO reviews (rating,product_id, user_id, comment) VALUES (@rating, @product_id, @user_id, @comment) UPDATE guest SET point = point + 5 WHERE guest.id = @user_id ')
+    let res2 = await pool.request()
+    .input('user_id', sql.Int, reviews.user_id)
+    .query("UPDATE guest SET discount = discount + (CASE WHEN point + 5 > 50 THEN 1 ELSE 0 END), point = point - (CASE WHEN point + 5 > 50 THEN 50 ELSE 0 END) WHERE id = @user_id")
     console.log(" res :" + res);
-    return res.recordsets;
+    return res.recordsets, res2.recordsets;
     } catch (error) {
     console.log(" error :" + error);
     }

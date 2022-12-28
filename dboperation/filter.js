@@ -27,10 +27,23 @@ const sql = require("mssql");
     try {
     let pool = await sql.connect(config);
     let res = await pool.request()
-   
-    .input('searchKeyword', sql.VarChar, searchKeyword)
-
-    .query("SELECT * FROM products WHERE  name LIKE  '%' +@searchKeyword + '%'");
+    .input('searchKeywordname', sql.VarChar, searchKeyword.name)
+    .input ('searchKeywordbarcode', sql.VarChar, searchKeyword.barcode)
+    .query("SELECT * FROM products WHERE  name LIKE  '%' +@searchKeywordname + '%' OR barcode LIKE  '%' +@searchKeywordbarcode + '%' ");
+    console.log(" res :" + res);
+    return res.recordsets;
+    } catch (error) {
+    console.log(" error :" + error);
+    }
+    }
+  async function getBranchesFilter(searchKeyword) {
+    try {
+    let pool = await sql.connect(config);
+    let res = await pool.request()
+    .input('searchKeywordcity', sql.VarChar, searchKeyword.city)
+    .input('searchKeywordstreet', sql.VarChar, searchKeyword.street)
+    .input('searchKeywordzipcode', sql.VarChar, searchKeyword.zipcode)
+    .query("SELECT * FROM branches WHERE  city LIKE  '%' +@searchKeywordcity + '%' OR street LIKE  '%' +@searchKeywordstreet + '%' OR zipcode LIKE  '%' +@searchKeywordzipcode + '%'");
     console.log(" res :" + res);
     return res.recordsets;
     } catch (error) {
@@ -39,7 +52,7 @@ const sql = require("mssql");
     }
 
 module.exports = {
-
+    getBranchesFilter: getBranchesFilter,
     getProductFilter: getProductFilter,
 }
 

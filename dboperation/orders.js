@@ -17,7 +17,7 @@ const sql = require("mssql");
         let pool = await sql.connect(config);
         let res = await pool.request()
             .input('input_parameter', sql.Int, order.user_id)
-            .query("SELECT *  FROM orders WHERE user_id = @input_parameter");
+            .query("SELECT *  FROM orders o INNER JOIN addresses a ON o.address_id = a.id WHERE o.user_id = @input_parameter");
         console.log(" res :" + res);
         return res.recordsets;
     } catch (error) {
@@ -35,9 +35,9 @@ const sql = require("mssql");
             .input('status', sql.VarChar, order.status)
             .input('address_id', sql.Int, order.address_id)
             .input('wallet_name', sql.VarChar, order.wallet_name)
-            .query("INSERT INTO orders (user_id, total_price, order_date, status, address_id , wallet_name ) VALUES (@user_id, @total_price, @order_date, @status, @address_id, @wallet_name)");
+            .query("INSERT INTO orders (user_id, total_price, order_date, status, address_id , wallet_name ) OUTPUT inserted.id VALUES (@user_id, @total_price, @order_date, @status, @address_id, @wallet_name) ");
         console.log(" res :" + res);
-        return res.recordsets;
+        return res.recordsets;  
     } catch (error) {
         console.log(" error :" + error);
     }

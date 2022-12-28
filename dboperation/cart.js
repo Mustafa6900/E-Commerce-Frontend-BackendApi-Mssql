@@ -69,6 +69,18 @@ async function deleteCartItem(cart) {
     }
 }
 
+async function deletemyCart(cart) {
+    try {
+        let pool = await sql.connect(config);
+        let res = await pool.request()
+            .input('user_id', sql.Int, cart.user_id)
+            .query("DELETE FROM cart WHERE user_id = @user_id");
+        console.log(" res :" + res);
+        return res.recordsets;
+    } catch (error) {
+        console.log(" error :" + error);
+    }
+}
 
 
   
@@ -77,5 +89,6 @@ module.exports = {
     getCartByCartId: getCartByCartId,
     addCart: addCart,
     updateCartItem: updateCartItem,
-    deleteCartItem: deleteCartItem
+    deleteCartItem: deleteCartItem,
+    deletemyCart: deletemyCart
 };

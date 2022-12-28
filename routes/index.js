@@ -15,6 +15,7 @@ const sqlj = require("../dboperation/reviews");
 const sqlk = require("../dboperation/guest");
 const sqll = require("../dboperation/wallets");
 const sqlm = require("../dboperation/filter");
+const sqln = require("../dboperation/admin");
 
 
 /* GET home page. */
@@ -134,18 +135,30 @@ router.get('/wallets', function(req, res, next) {
     res.json(result);
     });
     });
-  router.route('/guest/guestdelete/:id').delete(function(req, res, next) {
+  router.route('/guest/guestdelete').delete(function(req, res, next) {
   sqlk.deleteguest(req.body).then(result => {
   res.json(result);
   });
   });
-  router.put('/ :id', (req, res) => {  // kullanıcı email password güncelleme 
+  router.put('/guestupdate/:id', (req, res) => {  // kullanıcı email password güncelleme 
     const id = req.params.id;
     const guest = req.body;
     sqlk.updateGuest(id, guest).then((updatedGuest) => {
     res.json(updatedGuest);
     });
     });
+  
+  router.put('/guestupdatepoint', (req, res) => {  // kullanıcı puan güncelleme
+    sqlk.updatepoint().then((result) => {
+    res.json(result);
+    });
+    });
+  router.put('/guest/updatediscount', (req, res) => {  // kullanıcı discount güncelleme
+    sqlk.updateDiscount(req.body).then((result) => {
+    res.json(result);
+    });
+    });
+    
     
 //  addresses actions
 
@@ -192,6 +205,12 @@ router.get('/wallets', function(req, res, next) {
     res.json(result);
     });
     });
+
+  router.delete('/cart/deletemyCart' , function(req, res, next) {
+  sqlc.deletemyCart(req.body).then(result => {
+  res.json(result);
+  });
+  });
 
     // categories actions
 
@@ -255,12 +274,30 @@ router.get('/wallets', function(req, res, next) {
           });
         });
 
+        router.post('/myorder/getorder', function(req, res, next) {
+          sqlf.getmyOrder_items(req.body).then(result => {
+          res.json(result);
+          });
+          });
+
         router.post('/order/buyproduct', function(req, res, next) {
           sqlg.postOrders(req.body).then(result => {
           res.json(result);
           });
           });
 
+          router.post('/order/addorderitem', function(req, res, next) {
+            sqlf.addOrder_items(req.body).then(result => {
+            res.json(result);
+            });
+            });
+          
+          router.put('/order/returned', function(req, res, next) {
+            sqlf.order_return_update(req.body).then(result => {
+            res.json(result);
+            });
+           });
+            
         // products actions
 
         router.get('/products/category/:name', function(req, res, next) { //ana kategoriye göre ürünler getir
@@ -325,15 +362,42 @@ router.get('/wallets', function(req, res, next) {
                   });
                   // filter actions
 
-                  router.get('/products/filter/:searchKeyword', function(req, res, next) {
-                    const searchKeyword = req.params.searchKeyword;
-                 
-                    sqlm.getProductFilter(searchKeyword).then(result => {
+                  router.post('/filter/categoriesandbarcode', function(req, res, next) {
+                    sqlm.getProductFilter(req.body).then(result => {
                     res.json(result);
                     });
                     });
 
+                  router.post("/filter/getBranchesFilter", function(req, res, next) {
+                    sqlm.getBranchesFilter(req.body).then(result => {
+                      res.json(result);
+                    });
+                  });
 
+                  router.post("/filter/SizeColor", function(req, res, next) {
+                    sqlh.filterSizeColor(req.body).then(result => {
+                      res.json(result);
+                    });
+                  });
+
+                  // admin actions
+
+                  router.get("/getreturneditems", function(req, res, next) {
+                    sqln.getreturneditems().then(result => {
+                      res.json(result);
+                      });
+                      });
+                  router.put("/updatediscountproduct", function(req, res, next) {
+                    sqln.updatediscountproduct(req.body).then(result => {
+                      res.json(result);
+                      });
+                      });
+
+                  router.delete("/deletereview", function(req, res, next) {
+                    sqln.deletereview(req.body).then(result => {
+                      res.json(result);
+                      });
+                      });
                   
 
             
