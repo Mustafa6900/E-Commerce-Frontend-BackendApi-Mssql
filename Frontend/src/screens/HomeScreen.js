@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Cookie from 'js-cookie';
-import styled from 'styled-components';
 function HomeScreen() {
 
   const [subProduct, setsubProducts] = useState([]);
@@ -13,6 +12,8 @@ function HomeScreen() {
   const [filterproducts, setFilterProducts] = useState([]);
   const [selectSize, setSelectSize] = useState('');
   const [selectColor, setSelectColor] = useState('');
+  const [filterBarcode, setFilterBarcode] = useState('');
+  const [filterName, setFilterName] = useState('');
 
   useEffect(() => {
     async function fetchData() {
@@ -123,14 +124,12 @@ function HomeScreen() {
   }
 
   async function filterCategoriesBarcode() {
-
-    let barcodex = document.getElementById('barcode').value;
-let namex = document.getElementById('name').value;
-
-if (document.getElementById('barcode').value === '') {
+    let barcodex = filterBarcode;
+    let namex = filterName;
+if (filterBarcode=== '') {
   barcodex = null;
   }
-  if (document.getElementById('name').value === '') {
+  if (filterName === '') {
     namex = null;
   }
     const response = await fetch('http://localhost:3000/filter/categoriesandbarcode', {
@@ -168,6 +167,87 @@ return (
       <div className="card">
         <div className="card-header">
           <h3 className='title'>Products</h3>
+          <div className='filter-Categories-barcode-Size-Color'>
+            <div className='filter-Categories-Barcode'>
+            <input
+              className='filter-input'
+              type="text"
+              placeholder="Barcode"
+              value={filterBarcode}
+              onChange={(e) => setFilterBarcode(e.target.value)}
+            />
+            <input
+              className='filter-input'
+              type="text"
+              placeholder="Product Name"
+              value={filterName}
+              onChange={(e) => setFilterName(e.target.value)}
+            />
+            <button className="filter-button" onClick={filterCategoriesBarcode}>Filter</button>
+            </div>
+            <div className='filter-Size-Color'>
+            <select
+              className='filter-options'
+              value={selectSize}
+              onChange={(e) => setSelectSize(e.target.value)}
+            >
+              <option value="">Size</option>
+              <option value="XS">XS</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
+            <select
+              className='filter-options'
+              value={selectColor}
+              onChange={(e) => setSelectColor(e.target.value)}
+            >
+              <option value="">Color</option>
+              <option value="Black">Black</option>
+              <option value="White">White</option>
+              <option value="Red">Red</option>
+              <option value="Blue">Blue</option>
+              <option value="Green">Green</option>
+            </select>
+            <button className="filter-button" onClick={filterSizeColor}>Filter</button>
+           </div>
+          
+          </div>
+          <div className="filtered-Products">
+            <ul className="list-group">
+              {filterproducts.map((product) => (
+                <li className = "icerik" key={product.id}>
+                  <button
+                   className="list-group-item"
+                    onClick={() => handleReviewClick(product.id)}
+             >
+                    <img className="productss-image" src={product.image} alt="" />
+                  </button>
+                  <li className='icerik-detay'>
+                {product.name}
+                <br />
+                <br />
+                Size : {product.size}
+                <br />
+                <br />
+                Color : {product.color}
+                <br />
+                <br />
+                Fiyat : {product.price}
+                 <br />
+                 <br />
+                    <input type="number" className="form-control" id="quantity" placeholder="Adet giriniz"onChange={(e) => setQuantity(e.target.value)}></input>
+                    <br />
+                <button className="btn btn-primary" onClick={() => handleAddCartClick(product.id)}>Sepete Ekle</button>
+                <br />
+                <button className="btn btn-primary" onClick={() => handleAddFavoritesClick(product.id)}>Favorilere Ekle</button>
+                </li>
+                </li>
+    
+              ))}
+            </ul>
+          </div>
         </div>
         <div className="card-body">
           <ul className="list-group">
@@ -179,6 +259,7 @@ return (
                   onClick={() => { handleCategoryClick(product.id); handleReviewClick(product.id); } } >
                   <img className="productss-image"src={product.image} alt={product.id}  />
                 </button>
+               
                   
                   
                 <br />
@@ -241,8 +322,7 @@ return (
               
               ))}
           </ul>
-        </div>
-        
+        </div>    
       </div>
       </div>
       </div>

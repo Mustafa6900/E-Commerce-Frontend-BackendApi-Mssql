@@ -592,3 +592,72 @@ tbody > tr:nth-child(odd) {
   
   margin: 1rem;
 }
+
+.filter-Categories-barcode-Size-Color{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.filter-Categories-Barcode{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.filter-input{
+  margin-right: 1rem;
+}
+.filter-button{
+  padding: 7px;
+  border: 0.1rem #808080 solid;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.filter-options{
+  margin-right: 1rem;
+  border: 0.1rem #808080 solid;
+  border-radius: 0.5rem;
+  padding: 0.8rem;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.icerik{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex: 1 1 20rem;
+  margin: 1rem;
+  padding: 1rem;
+  border: 0.1rem #c0c0c0 solid;
+  border-radius: 0.5rem;
+  background-color: #fcfcfc;
+  height: fit-content;
+  width: max-content;
+ 
+}
+
+.icerik-detay{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1 1 20rem;
+  margin: 1rem;
+  padding: 1rem;
+  border: 0.1rem #c0c0c0 solid;
+  border-radius: 0.5rem;
+  background-color: #fcfcfc;
+  height: fit-content;
+  width: max-content;
+ 
+}

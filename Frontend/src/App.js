@@ -68,7 +68,7 @@ fetchData();
           <a href="myaddresseswallets">My Addresses & Wallets</a>
               <a href="cart">Cart</a>
               <a href="favorites">Favorites</a> 
-            {console.log(userInfo)}        
+            {console.log(userInfo, "userInfo")}        
             {userInfo ? (
               <Link to="/profile">{userInfo[0][0].name}</Link>
             ) : (
