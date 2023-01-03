@@ -1,0 +1,232 @@
+1) SELECT * FROM products WHERE name LIKE '%kelime%' OR barcode='barkod numarası';
+
+// Bu sorgu, "name" kolonunda kelime değeri içeren ürünleri ve "barcode" kolonunda barkod numarası değeri ile eşleşen ürünleri seçer. 
+// "OR" operatörü ile iki koşul arasında bir veya ikisinin de doğru olması durumunda sonuç döndürülür.
+
+2) SELECT * FROM branches WHERE city = 'İstanbul' OR street = 'Mecidiyeköy Caddesi' OR zipcode = '34437';
+
+// Bu sorgu, İstanbul ilinde, Mecidiyeköy Caddesi'nde veya 34437 posta kodu ile ilişkili olan şubeleri döndürecektir.
+// "OR" operatörü ile iki koşul arasında bir veya ikisinin de doğru olması durumunda sonuç döndürülür.
+
+3) SELECT o.id, o.order_date, o.total_price, o.status, p.name AS product_name, p.price, oi.quantity
+   FROM orders o
+   JOIN order_items oi ON oi.order_id = o.id
+   JOIN products p ON p.id = oi.product_id
+   WHERE o.user_id = "User_id"
+
+// Bu sorguda, orders tablosu ile order_items tablosu arasında bir JOIN işlemi yapılır ve products tablosu ile de JOIN işlemi yapılır. 
+// Böylece, siparişlerin detayları (ürün adı, fiyatı, adeti gibi) ile birlikte görüntülenebilir. 
+// Sorguda WHERE koşulu ile de sadece belirli bir kullanıcının siparişleri görüntülenir.
+// Not: Bu sorguda "User_id" yazılan yere istenilen kullanıcının ID'si yazılmalıdır. Örneğin, WHERE o.user_id = 123 şeklinde.
+
+4a) UPDATE users SET email = 'yenieposta@example.com', password = 'yeniparola' WHERE id = 1;
+
+// Bu sorgu, "users" tablosundaki id'si 1 olan kullanıcının e-posta adresini ve parolasını günceller.
+
+4b) DELETE FROM users WHERE id = 1;
+
+// Bu sorgu, "users" tablosundaki id'si 1 olan kullanıcıyı silerek hesabını kalıcı olarak siler.
+
+5) CREATE TABLE addresses (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  address TEXT,
+  city TEXT,
+  street TEXT,
+  zipcode INTEGER,
+  FOREIGN KEY (user_id) REFERENCES users(id) 
+);
+// Bu sorgu ile, bir "addresses" tablosu oluşturulur ve bu tablo kullanıcıların adreslerini saklar. 
+// Tabloda, kullanıcıların id'si, adres bilgisi, şehir, sokak, posta kodu gibi bilgileri saklanır. 
+// Bu sayede, her kullanıcının birden fazla adresi olabilir ve bu adresler veritabanında saklanır.
+
+INSERT INTO addresses (user_id, address, city, street, zipcode)
+VALUES (1, 'Adres 1', 'Şehir 1', 'Sokak 1', 12345),
+       (1, 'Adres 2', 'Şehir 2', 'Sokak 2', 54321),
+       (2, 'Adres 3', 'Şehir 3', 'Sokak 3', 11111),
+       (2, 'Adres 4', 'Şehir 4', 'Sokak 4', 22222);
+
+// Bu sorgu ile, "addresses" tablosuna 4 adet adres eklenir. 
+// İlk iki adres, user_id'si 1 olan bir kullanıcıya ait olurken, diğer iki adres de user_id'si 2 olan bir kullanıcıya ait olur. 
+// Bu sayede, veritabanında birden fazla kullanıcının birden fazla adresi saklanabilir.
+
+6) CREATE TABLE wallets (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  card_number TEXT,
+  card_name TEXT,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+// Bu sorgu ile, bir "wallets" tablosu oluşturulur ve bu tablo kullanıcıların cüzdanlarını saklar. 
+// Tabloda, kullanıcıların id'si, cüzdan numarası , cüzdan adı  gibi bilgileri saklanır. 
+// Bu sayede, her kullanıcının birden fazla cüzdanı olabilir ve bu cüzdanlar veritabanında saklanır.
+
+
+  INSERT INTO wallets (user_id, card_number, card_name)
+  VALUES (1, '1234 1234 1234 1234', 'Kart 1'),
+       (1, '5678 5678 5678 5678', 'Kart 2');
+
+// Bu sorgu ile "wallets" tablosuna 2 adet kredi kartı eklenir ve user_id'si 1 olan kullanıcının cüzdanına bu kartlar eklenir. 
+// Bu şekilde, bir kullanıcının birden fazla kredi kartı tutulabilir.
+
+
+7) CREATE TABLE favorites (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  product_id INTEGER,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+// Bu sorgu ile, bir "favorites" tablosu oluşturulur ve bu tablo kullanıcıların favori ürünlerini saklar. 
+// Tabloda, her bir favori için id, user_id ve product_id gibi kolonlar olur ve 
+// bu kolonlar favorinin id'si, ait olduğu kullanıcının id'si ve favorilenen ürünün id'si gibi bilgileri saklar. 
+// Bu sayede, her kullanıcının birden fazla favori ürünü olabilir ve bu ürünler veritabanında saklanır.
+
+8a) CREATE TABLE cart (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  product_id INTEGER,
+  quantity INTEGER,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+// Bu sorgu ile, bir "cart" tablosu oluşturulur ve bu tablo kullanıcıların sepetlerini saklar. 
+// Tabloda, her bir ürün için id, user_id, product_id ve quantity gibi kolonlar olur ve 
+// bu kolonlar ürünün id'si, ait olduğu kullanıcının id'si, ürünün id'si ve adet gibi bilgileri saklar. 
+// Bu sayede, her kullanıcının sepetinde birden fazla ürün olabilir ve bu ürünler veritabanında saklanır.
+ 
+8b) SELECT * FROM addresses WHERE user_id = 1;
+
+// Bu sorgu ile, "addresses" tablosundaki user_id'si 1 olan adresler getirilir. 
+// Bu sayede, kullanıcının teslimat için seçebileceği adresler listelenir ve kullanıcı istediği adresi seçerek alışveriş yapabilir.
+
+9) SELECT category, SUM(total_price) as total_spent
+   FROM orders
+   JOIN products ON orders.product_id = products.id
+   WHERE order_date BETWEEN '2022-01-01' AND '2022-01-31'
+   GROUP BY category
+
+// Bu SQL sorgusu, "orders" tablosundaki siparişlerin "category" kolonu (ürünlerin kategorisi) 
+// ve "total_price" kolonunun (toplam fiyat) toplamını alır 
+// ve kullanıcının seçtiği ay (örneğin Ocak ayı için "order_date" kolonunun "2022-01-01" ile "2022-01-31" arasında olması koşulu kullanılır) olarak gruplandırılır.
+// Bu sorguda, "orders" tablosu ile "products" tablosu arasında bir "JOIN" işlemi yapılmıştır. 
+// Bu sayede, "orders" tablosundaki ürünlerin kategorileri "products" tablosundaki ürünlerin kategorilerine bağlı olarak getirilir.
+// Sonuç olarak, bu sorgu ile kullanıcının seçtiği ay içinde yaptığı alışverişlerin kadın, erkek ve çocuk kategorilerindeki dağılımı bar grafik olarak gösterilebilir.
+
+10) SELECT * FROM products WHERE category = 'kaban' AND color = 'siyah' AND size = 'L'
+
+// Bu sorgu ile, "products" tablosundaki "category" kolonu "kaban", "color" kolonu "siyah" ve "size" kolonu "L" olan ürünler getirilir. 
+// Bu sayede, kullanıcı istediği alt kategoride (örneğin "kaban"), farklı filtreler (renk ve beden) kullanarak veriyi süzmüş olur.
+
+11a) INSERT INTO reviews (user_id, product_id, rating, comment, image)
+    VALUES (1, 2, 4, 'Bu ürün gerçekten çok iyi!', 'image_data')
+
+// Bu sorgu ile, "reviews" tablosuna yeni bir satır eklenir ve 
+// bu satırın "user_id" kolonu 1, "product_id" kolonu 2, "rating" kolonu 4, "comment" kolonu "Bu ürün gerçekten çok iyi!" ve "image" kolonu "image_data" olarak ayarlanır. 
+// Bu sayede, kullanıcı sisteme eklediği fotoğraf ve ürünle ilgili değerlendirmeyi kaydetmiş olur.
+
+11b) UPDATE reviews SET rating = 3, comment = 'Bu ürün iyi, ancak beklediğimden biraz daha az kaliteli' WHERE id = 1
+
+// Bu SQL sorgu ise "reviews" tablosundaki verileri güncellemek için kullanılır. 
+// Bu sorgu ile, tablonun "id" kolonu 1 olan satırının "rating" kolonunu 3 ve "comment" kolonunu "Bu ürün iyi, ancak beklediğimden biraz daha az kaliteli" olarak değiştirir.
+
+12 ) SELECT id, SUM(point) as total_point FROM users GROUP BY id HAVING total_point >= 50
+
+// Bu sorgu sonucunda, ürünlerde %5 indirim yapılması gereken kullanıcıların listesi elde edilir. 
+// Bu listeyi kullanarak, ürünlerde indirim yapılması gereken kullanıcıların indirimlerini uygulayabilirsin.
+
+13) SELECT strftime('%m', order_date) as month, product_id, SUM(is_returned) as total_returned
+    FROM order_items
+    WHERE is_returned = 1
+    GROUP BY month, product_id
+    ORDER BY total_returned DESC
+
+// Bu sorgu, "order_items" tablosundaki tüm kayıtları seçer ve "is_returned" kolonundaki değerlerine göre gruplar. 
+// Her grup için, bu kolonun değerinin toplamını "total_returned" olarak adlandırır ve bu toplamın en yüksek olduğu ürünleri sıralar. 
+// Bu şekilde, iade yapılan ürünlerin sayısı ve en çok iade edilen ürünler bulunur.
+// Bu sorgunun sonucunda, "month", "product_id" ve "total_returned" kolonları döndürülür. 
+// "month" kolonu iade yapılan ürünlerin hangi aylar olduğunu gösterir, "product_id" kolonu iade yapılan ürünlerin idsini gösterir 
+// ve "total_returned" kolonu iade yapılan ürünlerin sayısını gösterir.
+
+14) SELECT product_id, SUM(quantity) as total_sold
+    FROM order_items
+    WHERE order_id IN (SELECT id FROM orders WHERE city = '{city}' AND order_date BETWEEN '{start_date}' AND '{end_date}')
+    AND product_id IN (SELECT id FROM products WHERE category_id IN (SELECT id FROM categories WHERE name IN ('kadın', 'erkek', 'çocuk')))
+    GROUP BY product_id
+    ORDER BY total_sold DESC
+    LIMIT 3
+
+// Bu sorguda, order_items tablosundan siparişlerin ürün ID'leri, orders tablosundan siparişlerin şehirleri ve tarihleri, 
+// products tablosundan ürünlerin kategorileri ve categories tablosundan kategorilerin isimlerine göre filtreleme yapılarak 
+// ürünlerin satış miktarları toplamı hesaplanıyor ve sıralama yapılarak en çok satan üç ürün seçiliyor. 
+
+15) SELECT category, SUM(quantity) as total_quantity
+    FROM orders o
+    JOIN order_items oi ON o.id = oi.order_id
+    JOIN products p ON oi.product_id = p.id
+    WHERE strftime('%m', order_date) = '02' 
+    GROUP BY category
+
+// Bu sorguda, "orders" tablosu ve "order_items" tablosu JOIN edilerek, 
+// siparişlerin içerisinde bulunan ürünlerin kategorileri elde edilmiştir. 
+// Daha sonra, "SUM" fonksiyonu kullanılarak kategorilere göre toplam satış miktarı hesaplanmıştır.
+// Daha sonra, "strftime" fonksiyonu kullanılarak "order_date" sütunundan sadece ay bilgisi alınmış 
+// ve "02" (Şubat) ile eşleştirilerek filtreleme yapılmıştır.
+
+16) SELECT category, product_name, COUNT(product_id) as favorites
+    FROM favorites
+    INNER JOIN products ON favorites.product_id = products.id
+    GROUP BY category, product_name
+    ORDER BY favorites DESC
+    LIMIT 3;
+
+// Bu sorguda, favorites tablosundaki product_id değerlerini products tablosunda id ile eşleştirir ve category ve product_name değerlerini gruplar. 
+// Bu gruplar için COUNT fonksiyonu kullanılarak, her ürün için kaç kez favorilere eklendiği sayısı hesaplanır ve favorites adında bir sütun oluşturulur. 
+// Son olarak, ORDER BY komutu kullanılarak favorites sütununa göre sıralama yapılır ve en üstteki 3 ürün seçilir LIMIT 3 komutuyla. 
+// Bu ürünlerin kategorileri ve isimleri döndürülür.
+
+17) UPDATE products SET price = price - (price * 0.10) WHERE id IN (1, 2, 3);
+
+// Bu sorgu, yöneticinin belirlediği ürünün fiyatını %10 azaltacak şekilde güncelleyecektir.
+// idsi 1, 2 veya 3 olan ürünlerin fiyatlarını %10 azaltacak şekilde güncelleyecektir.
+
+18) UPDATE products
+    SET price = price * 0.9
+    WHERE id IN (
+     SELECT product_id
+     FROM order_items
+     WHERE order_date BETWEEN '2022-01-01' AND '2022-01-31'  -- burada belirtilen tarih aralığını değiştirerek istediğin aya göre sorgu çalıştırabilirsin
+     GROUP BY product_id
+     ORDER BY SUM(quantity) ASC
+     LIMIT 10
+);
+
+// Bu sorguda, order_items tablosundaki product_id kolonunu gruplayarak, satış miktarına göre sıralıyoruz ve en az satılan on ürünü seçiyoruz. 
+// Daha sonra bu ürünleri products tablosunda bulup, fiyatlarını %10 indirip güncelliyoruz.
+
+19) UPDATE users
+    SET discount = discount + 1
+    WHERE id IN (SELECT id FROM users ORDER BY point DESC LIMIT 10);
+
+// Bu sorgu, en fazla puan toplayan 10 kullanıcının indirim miktarlarını 1 artıracaktır.
+
+20) DELETE FROM reviews WHERE id = [review_id] AND user_id = [user_id]
+
+// Bu sorgu ile veritabanındaki belirtilen review_id ve user_id'ye ait yorum ve resim silinebilir. 
+
+
+E-R Diagram
+
+Bu diagramda, 
+
+"products" tablosu "categories" tablosu ile "1-N" ilişkisi içindedir. Yani bir kategorinin birden fazla ürünü olabilir, ancak bir ürünün sadece bir kategorisi olabilir.
+"users" tablosu "cards" tablosu ile "1-N" ilişkisi içindedir. Yani bir kullanıcının birden fazla kredi kartı bulunabilir, ancak bir kredi kartının sadece bir kullanıcısı olabilir.
+"users" tablosu "addresses" tablosu ile "1-N" ilişkisi içindedir. Yani bir kullanıcının birden fazla adresi bulunabilir, ancak bir adresin sadece bir kullanıcısı olabilir.
+"products" tablosu "favorites" tablosu ile "M-N" ilişkisi içindedir. Yani bir ürünü birden fazla kullanıcı favorileştirebilir ve bir kullanıcının birden fazla ürünü favorileştirebilir.
+"carts" tablosu "products" tablosu ile "1-N" ilişkisi içindedir. Yani bir sepetin birden fazla ürünü bulunabilir, ancak bir ürünün sadece bir sepete ait olabilir.
+"orders" tablosu "users" tablosu ile "1-1" ilişkisi içindedir. Yani bir siparişin sadece bir kullanıcısı olabilir ve bir kullanıcının sadece bir siparişi olabilir.
+"orders" tablosu "carts" tablosu ile "1-1" ilişkisi içindedir. Yani bir siparişin sadece bir sepete ait olabilir ve bir sepetin de sadece bir siparişe ait olabilir.
+
