@@ -8,6 +8,8 @@ You can also access the E-R diagram and the question file containing the queries
 To run the project, make sure to install the necessary libraries first. 
 Then, start the backend API with "npm start", which is run through the index.js file.  Don't forget to install nodemon for the backend !
 Afterwards, go to the frontend and run "npm start", which is run through the app.js file. Enjoy your shopping! :)
+The site contains mixed Turkish and English words.
+
 
 E-R Diagram ; 
 
