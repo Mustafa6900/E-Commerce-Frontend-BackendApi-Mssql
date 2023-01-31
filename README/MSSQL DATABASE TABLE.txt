@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE guest (
   id INTEGER PRIMARY KEY IDENTITY(1,1),
   name TEXT,
   mail TEXT,
